@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .wrap {
+        display: flex;
+      }
+      .inf {
+        width: 300px;
+        height: 800px;
+        border: 1px solid black;
+      }
+      .chating {
+        width: 500px;
+        height: 800px;
+        border: 1px solid black;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="inf">
+        <div>유저1</div>
+        <div>
+          아이디 :
+          <input type="text" id="name_user1" />
+        </div>
+        <div>
+          메시지 :
+          <input type="text" id="message_user1" />
+        </div>
+        <button id="button">메시지 보내기</button>
+      </div>
+      <div id="content" class="chating"></div>
+    </div>
+  </body>
+  <script>
+    window.onload = () => {
+      const socket = io.connect();
+      // 클라이언트 이벤트 연결
+      socket.on("message", (data) => {
+        let el = `
+        <li>
+            <h3>${data.name_user1}</h3>
+            <p>${data.message_user1}</p>
+            <p>${data.date}</p>
+        </li>
+        `;
+        content.innerHTML += el;
+      });
+      let put = (button.onclick = () => {
+        socket.emit("message", {
+          name_user1: name_user1.value,
+          message_user1: message_user1.value,
+          date: new Date().toString(),
+        });
+        message_user1.value = "";
+      });
+      document.onkeydown = (e) => {
+        if (e.keyCode == 13) {
+          put();
+        }
+      };
+    };
+  </script>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div style="color: green; font-size: 30px">버디버디</div>
+    <div style="color: yellowgreen; font-size: 20px">모두의 채팅</div>
+    <div>
+      작성자 :
+      <input type="text" id="username" />
+    </div>
+    <div>
+      메시지 :
+      <input type="text" id="message" />
+    </div>
+    <button id="button">메시지 보내기</button>
+    <ul id="content"></ul>
+  </body>
+  <script>
+    window.onload = () => {
+      const socket = io.connect();
+      console.log(socket);
+      // 클라이언트 이벤트 연결
+      socket.on("message", (data) => {
+        let el = `
+        <li>
+            <h3>${data.username}</h3>
+            <p>${data.message}</p>
+            <p>${data.date}</p>
+        </li>
+        `;
+        content.innerHTML += el;
+      });
+      let put = (button.onclick = () => {
+        socket.emit("message", {
+          username: username.value,
+          message: message.value,
+          date: new Date().toString(),
+        });
+        message.value = "";
+      });
+      document.onkeydown = (e) => {
+        if (e.keyCode == 13) {
+          put();
+        }
+      };
+    };
+  </script>
+</html>

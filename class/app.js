@@ -30,7 +30,8 @@ const PORT = 3002;
 
 app.get("/", (req, res) => {
   fs.readFile("page.html", (err, data) => {
-    res.end(data);
+    console.log(data);
+    res.send({ data });
   });
 });
 
